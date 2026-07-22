@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Contador de Sacolas</title>
+<meta name="description" content="Contador automático de sacolas por câmera, leve e rápido.">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- ============================================================ -->
+  <!-- FUNDO ANIMADO: objetos caindo lentamente (canvas leve, 2D)   -->
+  <!-- ============================================================ -->
+  <canvas id="bg-canvas" aria-hidden="true"></canvas>
+
+  <!-- ============================================================ -->
+  <!-- TELA INICIAL                                                  -->
+  <!-- ============================================================ -->
+  <main id="screen-home" class="screen screen--active">
+    <div class="home-content">
+      <h1 class="logo">📦 Contador<span>Sacolas</span></h1>
+      <p class="subtitle">Conte sacolas automaticamente pela câmera</p>
+      <div class="button-stack">
+        <button id="btn-start" class="btn btn--primary">Iniciar Contagem</button>
+        <button id="btn-last" class="btn btn--secondary">Ver Última Contagem</button>
+      </div>
+    </div>
+  </main>
+
+  <!-- ============================================================ -->
+  <!-- TELA DE CONTAGEM (CÂMERA)                                     -->
+  <!-- ============================================================ -->
+  <section id="screen-camera" class="screen">
+    <div class="camera-wrap">
+      <video id="video" autoplay playsinline muted></video>
+      <canvas id="detect-canvas" class="detect-overlay"></canvas>
+
+      <!-- área de detecção (linha/zona onde a sacola é contada) -->
+      <div class="detect-zone" id="detect-zone"></div>
+
+      <div class="hud">
+        <div class="hud-counter">
+          <span class="hud-counter__label">Sacolas</span>
+          <span class="hud-counter__value" id="counter-value">0</span>
+        </div>
+        <button id="btn-stop" class="btn btn--ghost btn--small">Encerrar</button>
+      </div>
+
+      <p class="camera-hint" id="camera-hint">Aponte a câmera para o fluxo de sacolas. Cada sacola clara e translúcida que atravessar a linha soma +1.</p>
+    </div>
+  </section>
+
+  <!-- ============================================================ -->
+  <!-- TELA "ÚLTIMA CONTAGEM"                                        -->
+  <!-- ============================================================ -->
+  <section id="screen-history" class="screen">
+    <div class="history-card">
+      <h2>Última Contagem</h2>
+
+      <div id="history-empty" class="history-empty" hidden>
+        <p>Nenhuma contagem salva ainda.</p>
+      </div>
+
+      <div id="history-data" class="history-data" hidden>
+        <div class="history-row">
+          <span class="history-row__label">Total de sacolas</span>
+          <span class="history-row__value" id="history-total">0</span>
+        </div>
+        <div class="history-row">
+          <span class="history-row__label">Salvo em</span>
+          <span class="history-row__value" id="history-date">-</span>
+        </div>
+      </div>
+
+      <div class="history-actions">
+        <button id="btn-clear-history" class="btn btn--danger">Apagar Histórico</button>
+        <button id="btn-back-home" class="btn btn--ghost">Voltar</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Aviso de permissão negada / erro de câmera -->
+  <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+
+  <script src="background.js"></script>
+  <script src="detector.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,315 @@
+/* ==========================================================
+   TOKENS
+   ========================================================== */
+:root{
+  --bg-deep:      #0b0f14;
+  --bg-panel:     #121820;
+  --line:         #212b36;
+  --ink:          #eef3f7;
+  --ink-dim:      #93a3b3;
+  --accent:       #ffb347;   /* âmbar - cor de "sacola/pacote" */
+  --accent-ink:   #1a1206;
+  --ok:           #4ade80;
+  --danger:       #f66d6d;
+  --radius:       14px;
+  --radius-sm:    9px;
+  --shadow:       0 10px 30px rgba(0,0,0,.35);
+  font-size: 16px;
+}
+
+*, *::before, *::after{ box-sizing: border-box; }
+html, body{ height:100%; }
+body{
+  margin:0;
+  background:var(--bg-deep);
+  color:var(--ink);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  overflow:hidden; /* app em tela cheia, sem scroll */
+  -webkit-font-smoothing:antialiased;
+}
+
+button{ font-family:inherit; }
+
+/* ==========================================================
+   FUNDO ANIMADO (canvas)
+   ========================================================== */
+#bg-canvas{
+  position:fixed;
+  inset:0;
+  width:100%;
+  height:100%;
+  z-index:0;
+  display:block;
+  background:
+    radial-gradient(1200px 800px at 20% -10%, #16202c 0%, transparent 60%),
+    radial-gradient(1000px 700px at 100% 110%, #171f2a 0%, transparent 55%),
+    var(--bg-deep);
+}
+
+/* ==========================================================
+   TELAS (troca simples via classe .screen--active)
+   ========================================================== */
+.screen{
+  position:fixed;
+  inset:0;
+  z-index:2;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  padding:24px;
+}
+.screen--active{ display:flex; }
+
+/* ---------- Home ---------- */
+.home-content{
+  text-align:center;
+  animation: fadeUp .5s ease both;
+}
+.logo{
+  margin:0 0 6px;
+  font-size:clamp(1.8rem, 5vw, 2.6rem);
+  font-weight:800;
+  letter-spacing:-0.02em;
+}
+.logo span{
+  display:inline-block;
+  color:var(--accent);
+  margin-left:.15em;
+}
+.subtitle{
+  margin:0 0 34px;
+  color:var(--ink-dim);
+  font-size:clamp(.95rem, 2.2vw, 1.05rem);
+}
+.button-stack{
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+  width:min(340px, 84vw);
+  margin:0 auto;
+}
+
+/* ---------- Botões ---------- */
+.btn{
+  appearance:none;
+  border:none;
+  cursor:pointer;
+  border-radius:var(--radius-sm);
+  padding:14px 20px;
+  font-size:1rem;
+  font-weight:700;
+  transition:transform .12s ease, filter .12s ease, background .12s ease;
+  will-change:transform;
+}
+.btn:active{ transform:scale(.97); }
+
+.btn--primary{
+  background:var(--accent);
+  color:var(--accent-ink);
+  box-shadow:0 8px 24px rgba(255,179,71,.25);
+}
+.btn--primary:hover{ filter:brightness(1.06); }
+
+.btn--secondary{
+  background:var(--bg-panel);
+  color:var(--ink);
+  border:1px solid var(--line);
+}
+.btn--secondary:hover{ border-color:#33404e; }
+
+.btn--ghost{
+  background:transparent;
+  color:var(--ink-dim);
+  border:1px solid var(--line);
+}
+.btn--ghost:hover{ color:var(--ink); border-color:#33404e; }
+
+.btn--danger{
+  background:transparent;
+  color:var(--danger);
+  border:1px solid rgba(246,109,109,.4);
+}
+.btn--danger:hover{ background:rgba(246,109,109,.08); }
+
+.btn--small{ padding:8px 14px; font-size:.85rem; }
+
+/* ==========================================================
+   TELA DE CÂMERA
+   ========================================================== */
+.camera-wrap{
+  position:relative;
+  width:min(100%, 640px);
+  height:min(100dvh - 48px, 860px);
+  border-radius:20px;
+  overflow:hidden;
+  background:#000;
+  box-shadow:var(--shadow);
+}
+
+#video{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  transform:scaleX(-1); /* espelha, comportamento natural de webcam */
+}
+
+.detect-overlay{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  pointer-events:none;
+  opacity:0; /* usado apenas internamente pelo detector; não exibido */
+}
+
+.detect-zone{
+  position:absolute;
+  left:6%;
+  right:6%;
+  top:45%;
+  height:14%;
+  border-top:2px dashed rgba(255,179,71,.85);
+  border-bottom:2px dashed rgba(255,179,71,.85);
+  background:rgba(255,179,71,.06);
+  border-radius:6px;
+  pointer-events:none;
+}
+
+.hud{
+  position:absolute;
+  top:16px;
+  left:16px;
+  right:16px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  z-index:3;
+}
+
+.hud-counter{
+  display:flex;
+  align-items:baseline;
+  gap:8px;
+  background:rgba(10,14,18,.55);
+  backdrop-filter:blur(6px);
+  padding:8px 16px;
+  border-radius:999px;
+  border:1px solid rgba(255,255,255,.08);
+}
+.hud-counter__label{
+  font-size:.75rem;
+  text-transform:uppercase;
+  letter-spacing:.08em;
+  color:var(--ink-dim);
+}
+.hud-counter__value{
+  font-size:1.4rem;
+  font-weight:800;
+  color:var(--accent);
+  min-width:1.4ch;
+  text-align:right;
+}
+
+.camera-hint{
+  position:absolute;
+  left:16px;
+  right:16px;
+  bottom:16px;
+  margin:0;
+  text-align:center;
+  font-size:.8rem;
+  color:var(--ink-dim);
+  background:rgba(10,14,18,.55);
+  backdrop-filter:blur(6px);
+  padding:10px 14px;
+  border-radius:12px;
+  border:1px solid rgba(255,255,255,.08);
+}
+
+/* pulso rápido quando uma sacola é contada */
+.camera-wrap.pulse{ animation:pulseZone .35s ease; }
+@keyframes pulseZone{
+  0%{ box-shadow:0 0 0 0 rgba(255,179,71,.55); }
+  100%{ box-shadow:0 0 0 22px rgba(255,179,71,0); }
+}
+
+/* ==========================================================
+   TELA DE HISTÓRICO
+   ========================================================== */
+.history-card{
+  width:min(420px, 92vw);
+  background:var(--bg-panel);
+  border:1px solid var(--line);
+  border-radius:var(--radius);
+  padding:28px;
+  box-shadow:var(--shadow);
+  animation: fadeUp .35s ease both;
+}
+.history-card h2{
+  margin:0 0 20px;
+  font-size:1.2rem;
+}
+
+.history-empty p{ color:var(--ink-dim); margin:0 0 20px; }
+
+.history-data{ margin-bottom:22px; }
+.history-row{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:12px 0;
+  border-bottom:1px solid var(--line);
+}
+.history-row:last-child{ border-bottom:none; }
+.history-row__label{ color:var(--ink-dim); font-size:.9rem; }
+.history-row__value{ font-weight:700; }
+#history-total{ color:var(--accent); font-size:1.3rem; }
+
+.history-actions{
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+}
+.history-actions .btn{ flex:1; }
+
+/* ==========================================================
+   TOAST
+   ========================================================== */
+.toast{
+  position:fixed;
+  left:50%;
+  bottom:28px;
+  transform:translateX(-50%);
+  background:#1c242e;
+  border:1px solid var(--line);
+  color:var(--ink);
+  padding:12px 18px;
+  border-radius:10px;
+  font-size:.88rem;
+  z-index:10;
+  box-shadow:var(--shadow);
+  max-width:90vw;
+  text-align:center;
+}
+
+/* ==========================================================
+   ANIMAÇÕES
+   ========================================================== */
+@keyframes fadeUp{
+  from{ opacity:0; transform:translateY(10px); }
+  to{ opacity:1; transform:translateY(0); }
+}
+
+@media (prefers-reduced-motion: reduce){
+  *{ animation-duration:.001ms !important; animation-iteration-count:1 !important; }
+}
+
+/* ==========================================================
+   RESPONSIVO
+   ========================================================== */
+@media (max-width:480px){
+  .camera-wrap{ border-radius:14px; height:100dvh; }
+  .history-card{ padding:20px; }
+}
